@@ -5,10 +5,11 @@ Consider the following naive row-based N x N matmul (matrix multiplication):
 for (i = 0; i < N; i++){
    for (j = 0; j < N; j++){
       tmp = 0
-      for (k = 0; k < N; k++)
-         tmp += A[i,k] * B[k,j]
-   }
-      C[i,j] = tmp
+      for (k = 0; k < N; k++){
+         tmp += A[i,k] * B[k,j] 
+      }
+      C[i,j] = tmp 
+   }        
 }
 
 Suppose data is in double-precsion floating point. We are interested in
@@ -18,26 +19,40 @@ and cache), and depends on the cache size. Suppose the cache uses a
 least-recently-used (LRU) policy for deciding which data to flush when moving
 something into an already-full cache.
 
+Bindel: Distinguish between flops / double load and flops / byte.
+
 1. Suppose 16N is significantly larger than the size of our L3 cache. What is
 the memory-based AI of this code? (Hint: What is the memory-based AI of just the
 innermost loop?)
+Inner loop is 2N flops.
+2N^3 flops total.
+A[i,j] and B[k,j] take up 16 bytes together (assuming double-precision).
+If 16N is much larger than the size of the L3 cache, we get no benefit from caching 
+(can't prefetch A or B). Thus the AI of the inner loop should be 1/8.
 
+In total, we use 2N^3 flops, and perform roughly 16N^3 transfers, so the AI is something like
+1/8.
 
 2. Now suppose that the cache is substantially larger than 16N, but
 substantially smaller than 8N^2. What is the AI now?
 
+Now we should be able to fit two rows in the cache, but not an entire matrix. 
+We shouldn't have to reload the row of A we're multiplying at every iteration of the inner loop.
+So the AI should be about 1/4. (ignoring the lower order term from loading A).
 
 3. Now suppose the cache is large enough to hold all of A, B, and C. What is the
 AI now? (Hint: Writing to a byte of memory not already in the cache incurs two
 memory transfers: one to move the data to the cache for writing, and one to move
 the written data back to main memory.)
 
+Still 2N^3 flops, but only need to load 16N^2 bytes, so we will have AI N/8.
 
 4. Cache overflowing. On my CPU (Intel i7-4700 HQ), L1, L2, and L3 caches are 32
 KB, 256 KB, and 6 MB respectively. What is the largest problem size N that will
 fit in each cache? What is the arithmetic intensity associated with each problem
 size?
 
+If we are clever we only need to fit one row of A and all of B into the cache -> 8N^2 + 8N bytes.
 
 5. My CPU has 4 cores, each of which can do 8 fused multiply-adds per cycle, has
 a clock rate of 2.4 GHz, and a memory bandwidth of 25.6 GB/s. At what arithmetic
