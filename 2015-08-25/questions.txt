@@ -18,6 +18,31 @@ In practice, this took X time.  This includes
 Consider the following questions:
 
 1. What is a simple model that would predict this time?
+
+Let: 
+     a = Time to count a single person in a row
+     n = number of students per row
+     b = Time to state a row's number
+     m = number of rows
+
+Then a simple model would be T = a*n + b*m.
+
 2. What about a simple model to predict time for one person to count?
+
+T = a*n*m.
+
 3. How big should the class be before the parallel method takes less time?
+
+For the parallel method to take less time, we want
+
+(a*n + b*m)/(a*n*m) \leq 1,
+
+or alternatively
+
+1/m + b/a*n \leq 1.
+
+For all but the most trivial cases, we will have 1/m << 1, 
+so this basically says that as long as the number of rows is large, we win by computing in parallel
+as soon as the cost of reading the count for a single row (the "communication cost") is less than the cost of tallying that row.
+
 
