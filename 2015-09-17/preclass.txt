@@ -9,6 +9,8 @@ that you can figure out the numerical jargon.
 1.  What are one or two points that you found least clear in the
     9/17 slide decks (including the narration)?
 
+    The sparse matrix representation in the lumped slides was a little unclear.
+
 2.  Fill in the most straightforward implementation you can think of
     for multiplying a compressed sparse row matrix by a vector.
     Note: It is fine to look up the answer elsewhere!  If you do,
@@ -21,24 +23,41 @@ that you can figure out the numerical jargon.
           int* ptr; /* Offsets of the start of each row in pr
                        (ptr[n] = number of nonzeros) */
       } csr_t;
-    
-      void sparse_multiply(csr_t* A, double* x, double* result)
-      {
-          /* Fill in here */
-      } 
+
+void sparse_multiply(csr_t* A, double* x, double* result)
+{
+  memset(result, 0, A->n * sizeof(double));
+
+  int n = A->n;
+
+  for(int idy = 0; idy < n; ++idy)
+    {
+      for(int idx = A->ptr[idy]; idx < A->ptr[idy+1]; ++idx)
+	{
+	  int col= A->col[idx];
+	  double val = A->pr[idx];
+	  result[idy] += x[col]*val;
+	}
+    }
+} 
+
 
 3.  From the slides, complete the following short code:
 
       double laplacian_u(double (*u)(double x, double y),
                          double h, double x, double y)
       {
-          /* Estimate the Laplacian applied to u at (x,y) */
+          double d2udx2 = (u(x+h,y) -2u(x,y) + u(x-h,y))/(h*h);
+          double d2udy2 = (u(x,y+h) -2u(x,y) + u(x,y-h))/(h*h);
+	  return d2udy2 + d2udx2;
       }
 
     If you are unfamiliar with the syntax, the first argument to
     laplacian_u is a C function pointer -- within the function,
     it can be called in the same way as an ordinary function (i.e.
     u(x,y)).  See the laplace2d.c code in this directory as an example.
+
+    
 
 4.  In one space dimension, the following numerical scheme
     approximately solves the wave equation

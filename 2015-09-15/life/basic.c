@@ -26,7 +26,7 @@ typedef struct board_t {
  * entry of either the current or the previous board array.
  */
 #define B(which,i,j) which[((i)+1)*(n+2)+((j)+1)]
-
+/* Row-major */
 
 /**
  * Create the board for the problem
