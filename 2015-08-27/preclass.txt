@@ -8,13 +8,30 @@
     you should use a script to produce this plot, with both the serial
     fraction and the maximum number of cores as parameters.
 
+    Let a = .1, p be the number of processors, and n be the problem size.
+
+    S(n) = n*(a + (1-a))/n*(a + (1-a)/p) = 1/(a + (1-a)/p)
+
+    E(n) = S(n)/p = 1/(pa + (1-a))
+
+    Plot included in separate file.
+
 2.  Suppose a particular program can be partitioned into perfectly
     independent tasks, each of which takes time tau.  Tasks are
     set up, scheduled, and communicated to p workers at a (serial)
     central server; this takes an overhead time alpha per task.
     What is the theoretically achievable throughput (tasks/time)?
 
+    Throughput = n/(n*tau/p + n*alpha) = 1/(tau/p + alpha)
+
+    Noting that throughput increases monotonically with p and taking p to infinity, we see that throughput
+    is bounded by 1/alpha.
+
 3.  Under what circumstances is it best to not tune?
+
+    We shouldn't tune code that doesn't act as bottlenecks, 
+    if the human time required to tune outweighs the computational benefits of tuning,  
+    or if tuning severely affects the maintainability of our codebase.
 
 4.  The class cluster consists of eight nodes and fifteen Xeon Phi
     accelerator boards.  Based on an online search for information on
@@ -23,5 +40,9 @@
     you computed this, and give URLs for where you got the parameters
     in your calculation.  (We will return to this question again after
     we cover some computer architecture.)
-    
+
+    Assuming 1 flop / cycle, we have roughly 900 + 230 = 1.130 TFlops/second.
+
 5.  What is the approximate theoretical peak flop rate for your own machine?
+    
+    2.4Ghz quad-core -> ~10GFlops/second assuming 1 flop/cycle
