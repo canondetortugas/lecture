@@ -6,6 +6,9 @@ CFLAGS=-std=gnu99 -Wall
 ring.x: ring.c
 	$(CC) $(CFLAGS) $< -o $@
 
+test: test.c
+	$(CC) $(CFLAGS) $< -o $@	
+
 clean:
 	rm -f ring.x ring-*.o*
 

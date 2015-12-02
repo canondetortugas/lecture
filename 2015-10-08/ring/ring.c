@@ -72,6 +72,6 @@ int main(int argc, char** argv)
     free(my_data);
     free(result);
 
-    MPI_Finalize();
+    MPI_Finalize();\
     return 0;
 }

@@ -1,7 +1,11 @@
 0.  How much time did you spend on this pre-class exercise, and when?
 
+    Spent an hour and a half reading slides and a bit of extra time working on the exercise.
+
 1.  What are one or two points that you found least clear in the
     9/22 slide decks (including the narration)?
+
+    More emphasis on motivation of MC, less emphasis on error analyis. Illustration would be helpful.
 
 2.  The pthread_mc.c file in the demo subdirectory runs a Monte Carlo
     simulation to estimate the expected value of a uniform random
@@ -14,16 +18,24 @@
        and time to update the global counters in the critical 
        section (t_update).
 
+       N*t_trial + p*t_update*(N/B)
+
     b) Run the code with a few different parameter values in order
        to estimate N, t_trial, and t_update for this code on
        a totient compute node.
+
+       Done!
 
     c) Based on your model, suggest a strategy for choosing the batch
        size.  How might you generalize this strategy to automatically
        choose batch sizes for different types of computational
        experiments?
-    
+       
+       Change batch size depending on required synchronization technique.       
+
 3.  In the workq subdirectory of this directory, there is a basic work
     queue implementation.  Following the strategy outlined in the
     slides, add synchronization calls in the locations marked TODO.
     You should run the code to make sure it behaves as expected!
+
+    Did this in class
